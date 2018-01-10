@@ -205,6 +205,9 @@ var Observatory = {
       'style-src',
       'HttpOnly',
       'Secure',
+      'SameSite',
+      'Strict',
+      'Lax',
       'Access-Control-Allow-Origin',
       '"no-referrer"',
       '"same-origin"',
@@ -285,6 +288,19 @@ var Observatory = {
     // cookies gets the dash if they're not detected
     if (results.cookies.result === 'cookies-not-found') {
       $('#tests-cookies-pass').removeClass('glyphicon-ok').addClass('glyphicon-minus');
+    }
+
+    // SameSite cookies gets the dash if no cookies are detected or they don't implement samesite
+    if (_.includes(['samesite-session-not-used',
+      'samesite-cookies-not-found'],
+       results['cookies-samesite'].result)) {
+      $('#tests-cookies-samesite-pass').removeClass('glyphicon-ok').addClass('glyphicon-minus');
+    }
+
+    // Note that SameSite is optional
+    if (_.includes(['samesite-session-not-used'],
+       results['cookies-samesite'].result)) {
+      $('#tests-cookies-samesite-score-description').text($('#tests-cookies-samesite-score-description').text() + ' (optional)');
     }
 
     // assistive technologies can't see the glyphicons, so we assign them an aria-label
